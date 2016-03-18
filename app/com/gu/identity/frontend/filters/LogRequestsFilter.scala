@@ -11,11 +11,11 @@ object LogRequestsFilter extends Filter {
   private val logger = Logger(this.getClass)
 
   def apply(f: (RequestHeader) => Future[Result])(rh: RequestHeader): Future[Result] = {
-    val start = System.currentTimeMillis
+    val start = System.nanoTime
 
     def logTime(result: Result) {
       if(!rh.path.contains("/management/healthcheck")) {
-        val time = System.currentTimeMillis - start
+        val time = (System.nanoTime - start) / 1000000.0
         val activity = s"${rh.method} ${rh.uri}"
         logger.info(s"$activity completed in $time ms with status ${result.header.status}")
       }
