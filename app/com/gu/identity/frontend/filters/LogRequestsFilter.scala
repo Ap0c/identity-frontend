@@ -15,7 +15,7 @@ object LogRequestsFilter extends Filter {
 
     def logTime(result: Result) {
       if(!rh.path.contains("/management/healthcheck")) {
-        val time = (System.nanoTime - start)*1000
+        val time = (System.nanoTime - start) / 1000000.0
         val activity = s"${rh.method} ${rh.uri}"
         logger.info(s"$activity completed in $time ms with status ${result.header.status}")
       }
