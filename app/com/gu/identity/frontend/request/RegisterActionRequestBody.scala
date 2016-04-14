@@ -68,7 +68,7 @@ object RegisterActionRequestBody {
     )
 
     private val password: Mapping[String] = text.verifying(
-      "error.password", name => name.length > 5 && name.length < 21
+      "error.password", name => name.length > 5 && name.length < 73
     )
 
     def registerFormMapping(refererHeader: Option[String]): Mapping[RegisterActionRequestBody] =
