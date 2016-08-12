@@ -1,26 +1,45 @@
 package com.gu.identity.frontend.configuration
 
-import com.gu.identity.cookie.{IdentityKeys, IdentityCookieDecoder}
+import java.util.concurrent.TimeUnit
+
+import com.gu.identity.cookie.{IdentityCookieDecoder, IdentityKeys}
 import com.gu.identity.frontend.controllers._
 import com.gu.identity.frontend.csrf.CSRFConfig
 import com.gu.identity.frontend.errors.ErrorHandler
-import com.gu.identity.frontend.filters.{HtmlCompressorFilter, SecurityHeadersFilter, Filters}
-import com.gu.identity.frontend.logging.{SmallDataPointCloudwatchLogging, MetricsLoggingActor, SentryLogging}
-import com.gu.identity.frontend.services.{GoogleRecaptchaServiceHandler, IdentityServiceRequestHandler, IdentityServiceImpl, IdentityService}
+import com.gu.identity.frontend.filters.{Filters, HtmlCompressorFilter, SecurityHeadersFilter}
+import com.gu.identity.frontend.jobs.BlockedEmailDomainList
+import com.gu.identity.frontend.logging.{MetricsLoggingActor, SentryLogging, SmallDataPointCloudwatchLogging}
+import com.gu.identity.frontend.services.{GoogleRecaptchaServiceHandler, IdentityService, IdentityServiceImpl, IdentityServiceRequestHandler}
+import com.gu.identity.frontend.utils.ExecutionContexts
 import com.gu.identity.service.client.IdentityClient
 import jp.co.bizreach.play2handlebars.HandlebarsPlugin
 import play.api.i18n.I18nComponents
 import play.api.routing.Router
+import play.api.Play
+import play.api.libs.concurrent.{Akka => PlayAkka}
 import play.filters.gzip.GzipFilter
 import router.Routes
 import play.api.libs.ws.ning.NingWSComponents
-import play.api.{Mode, Logger, BuiltInComponentsFromContext, ApplicationLoader}
+import play.api.{ApplicationLoader, BuiltInComponentsFromContext, Logger, Mode}
 import play.api.ApplicationLoader.Context
 import play.api.libs.concurrent.Execution.defaultContext
 
-class FrontendApplicationLoader extends ApplicationLoader {
+import scala.concurrent.duration
+import scala.concurrent.duration.Duration
+
+class FrontendApplicationLoader extends ApplicationLoader with ExecutionContexts {
+
+  //lazy val actorSystem = PlayAkka.system(Play.current)
+
   def load(context: Context) = {
+    println("++Wotcha")
     val app = new ApplicationComponents(context).application
+    app.actorSystem.scheduler.schedule(
+      Duration.create(0, TimeUnit.SECONDS),
+      Duration.create(30, TimeUnit.SECONDS),
+      BlockedEmailDomainList
+    )
+    println("++Wotcha II")
     new HandlebarsPlugin(app)
     app
   }
@@ -67,6 +86,8 @@ class ApplicationComponents(context: Context) extends BuiltInComponentsFromConte
   if (environment.mode == Mode.Prod) {
     new SmallDataPointCloudwatchLogging(actorSystem).start
   }
+
+
 
   applicationLifecycle.addStopHook(() => terminateActor()(defaultContext))
 

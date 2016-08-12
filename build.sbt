@@ -1,3 +1,4 @@
+
 name := "identity-frontend"
 
 organization := "com.gu.identity"
@@ -23,8 +24,10 @@ libraryDependencies ++= Seq(
   "com.mohiva" %% "play-html-compressor" % "0.5.0",
   "com.gu.identity" %% "identity-cookie" % "3.51",
   "com.typesafe.akka" %% "akka-actor" % "2.4.1",
+  "com.typesafe.akka" %% "akka-agent" % "2.4.1",
   "com.typesafe.akka" %% "akka-slf4j" % "2.4.0",
   "com.amazonaws" % "aws-java-sdk-cloudwatch" % "1.10.54",
+  "com.amazonaws" % "aws-java-sdk-s3" % "1.10.54",
   "com.getsentry.raven" % "raven-logback" % "7.2.1"
 )
 

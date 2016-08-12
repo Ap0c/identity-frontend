@@ -114,7 +114,7 @@ object Configuration {
       val provider = new AWSCredentialsProviderChain(
         new EnvironmentVariableCredentialsProvider(),
         new SystemPropertiesCredentialsProvider(),
-        new ProfileCredentialsProvider(),
+        new ProfileCredentialsProvider("identity"),
         new InstanceProfileCredentialsProvider
       )
       provider
