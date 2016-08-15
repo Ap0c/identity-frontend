@@ -33,6 +33,11 @@ case class Configuration(
   sentryDsnJs: String,
   sentryDsnScala: String,
 
+  //S£ bucket details for infosex
+
+  infoSecS3BucketName: String,
+  infoSecS3BucketKey: String,
+
   underlying: PlayConfiguration)
 
 
@@ -74,6 +79,10 @@ object Configuration {
 
       sentryDsnScala = getString("sentry.dsn.scala"),
 
+      infoSecS3BucketName = getString("infosec.s3.bucket.name"),
+
+      infoSecS3BucketKey = getString("infosec.s3.bucket.key"),
+
       underlying = appConfiguration
     )
   }
@@ -105,6 +114,10 @@ object Configuration {
     sentryDsnJs = "--stubbed-sentry-dsn-js--",
 
     sentryDsnScala = "--stubbed-sentry-dsn-scala--",
+
+    infoSecS3BucketName = "infosec.s3.bucket.name",
+
+    infoSecS3BucketKey = "infosec.s3.bucket.key",
 
     underlying = PlayConfiguration.empty
   )

@@ -73,7 +73,7 @@ object RegisterActionRequestBody {
       email =>
         if (email.matches(EmailPattern.toString())) {
           val EmailPattern(name, domain) = email
-          BlockedEmailDomainList.getBlockedDomains.contains(domain) match {
+          BlockedEmailDomainList.isDomainBlocked(domain) match {
             case true => Invalid(ValidationError("error.email"))
             case false => Valid
           }

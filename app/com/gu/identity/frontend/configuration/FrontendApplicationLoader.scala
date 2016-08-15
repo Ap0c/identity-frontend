@@ -7,7 +7,7 @@ import com.gu.identity.frontend.controllers._
 import com.gu.identity.frontend.csrf.CSRFConfig
 import com.gu.identity.frontend.errors.ErrorHandler
 import com.gu.identity.frontend.filters.{Filters, HtmlCompressorFilter, SecurityHeadersFilter}
-import com.gu.identity.frontend.jobs.BlockedEmailDomainList
+import com.gu.identity.frontend.jobs.BlockedEmailDomainListJob
 import com.gu.identity.frontend.logging.{MetricsLoggingActor, SentryLogging, SmallDataPointCloudwatchLogging}
 import com.gu.identity.frontend.services.{GoogleRecaptchaServiceHandler, IdentityService, IdentityServiceImpl, IdentityServiceRequestHandler}
 import com.gu.identity.frontend.utils.ExecutionContexts
@@ -31,12 +31,6 @@ class FrontendApplicationLoader extends ApplicationLoader with ExecutionContexts
 
   def load(context: Context) = {
     val app = new ApplicationComponents(context).application
-
-    app.actorSystem.scheduler.schedule(
-      Duration.create(0, TimeUnit.SECONDS),
-      Duration.create(30, TimeUnit.MINUTES),
-      BlockedEmailDomainList
-    )
     new HandlebarsPlugin(app)
     app
   }
@@ -83,6 +77,8 @@ class ApplicationComponents(context: Context) extends BuiltInComponentsFromConte
   if (environment.mode == Mode.Prod) {
     new SmallDataPointCloudwatchLogging(actorSystem).start
   }
+
+  new BlockedEmailDomainListJob(actorSystem, frontendConfiguration).start
 
   applicationLifecycle.addStopHook(() => terminateActor()(defaultContext))
 

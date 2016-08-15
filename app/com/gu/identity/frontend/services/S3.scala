@@ -10,15 +10,14 @@ import scala.io.{Codec, Source}
 
 trait S3 extends Logging {
 
-
   private lazy val region = Region.getRegion(Regions.fromName(AWSConfig.region.getName))
-  val bucket: String
 
   lazy val client = new AmazonS3Client(AWSConfig.credentials)
   client.setEndpoint(region.getServiceEndpoint("s3"))
 
-  private def withS3Result[T](key: String)(action: S3Object => T): Option[T] = {
-     try {
+  private def withS3Result[T](bucket: String, key: String)(action: S3Object => T): Option[T] = {
+    logger.info(s"S3 getting bucket: $bucket Key: $key")
+    try {
        val request = new GetObjectRequest(bucket, key)
        val result = client.getObject(request)
        logger.info(s"S3 got ${result.getObjectMetadata.getContentLength} bytes from ${result.getKey}")
@@ -32,20 +31,18 @@ trait S3 extends Logging {
        finally { result.close() }
      } catch {
        case ex: AmazonS3Exception if ex.getStatusCode == 404 => {
-         logger.warn(s"Not found at $bucket  - $key");
+         logger.warn(s"Not found at $bucket  - $key")
          None
        }
        case ex: Exception => throw ex
      }
   }
 
-  def get(key: String)(implicit codec: Codec): Option[String] = withS3Result(key) {
+  def get(bucket: String, key: String)(implicit codec: Codec): Option[String] = withS3Result(bucket, key) {
       result => Source.fromInputStream(result.getObjectContent).mkString
   }
 }
 
 object S3InfoSec extends S3 {
-  override val bucket = "gu-identity-infosec" //TODO put it config
-  val key = "blocked-email-domains.txt"
-  def getBlockedEmailDomains = get(key)
+  def getBlockedEmailDomains(bucket: String, key: String) = get(bucket, key)
 }
