@@ -29,17 +29,14 @@ import scala.concurrent.duration.Duration
 
 class FrontendApplicationLoader extends ApplicationLoader with ExecutionContexts {
 
-  //lazy val actorSystem = PlayAkka.system(Play.current)
-
   def load(context: Context) = {
-    println("++Wotcha")
     val app = new ApplicationComponents(context).application
+
     app.actorSystem.scheduler.schedule(
       Duration.create(0, TimeUnit.SECONDS),
       Duration.create(30, TimeUnit.SECONDS),
       BlockedEmailDomainList
     )
-    println("++Wotcha II")
     new HandlebarsPlugin(app)
     app
   }
@@ -86,8 +83,6 @@ class ApplicationComponents(context: Context) extends BuiltInComponentsFromConte
   if (environment.mode == Mode.Prod) {
     new SmallDataPointCloudwatchLogging(actorSystem).start
   }
-
-
 
   applicationLifecycle.addStopHook(() => terminateActor()(defaultContext))
 

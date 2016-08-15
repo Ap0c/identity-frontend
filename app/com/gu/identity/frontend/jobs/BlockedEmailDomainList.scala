@@ -16,13 +16,10 @@ object BlockedEmailDomainList extends ExecutionContexts with Runnable with Loggi
     val t = Set("one","two","three")
     val domains = S3InfoSec.getBlockedEmailDomains map {
       blockedDomains => blockedDomains.split("\n").toSet
-
     } getOrElse Set()
     blockedDomainsAgent.send(domains)
-
   }
 
   def getBlockedDomains = blockedDomainsAgent.get()
-
 
 }
