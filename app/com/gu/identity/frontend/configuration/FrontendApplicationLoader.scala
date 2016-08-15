@@ -34,7 +34,7 @@ class FrontendApplicationLoader extends ApplicationLoader with ExecutionContexts
 
     app.actorSystem.scheduler.schedule(
       Duration.create(0, TimeUnit.SECONDS),
-      Duration.create(30, TimeUnit.SECONDS),
+      Duration.create(30, TimeUnit.MINUTES),
       BlockedEmailDomainList
     )
     new HandlebarsPlugin(app)
