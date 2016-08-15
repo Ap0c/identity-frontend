@@ -1,7 +1,6 @@
 package com.gu.identity.frontend.utils
 
 import akka.actor.ActorSystem
-
 import scala.concurrent.ExecutionContext
 import play.api.libs.concurrent.{Akka => PlayAkka}
 import play.api.Play

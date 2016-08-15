@@ -67,7 +67,6 @@ object RegisterActionRequestBody {
     import GroupCode.FormMappings.groupCode
     import ReturnUrl.FormMapping.returnUrl
 
-
     private val EmailPattern = """(.*)@(.*)""".r
 
     def registrationEmailAddress: Constraint[String] = Constraint[String]("constraint.email") {
@@ -85,7 +84,6 @@ object RegisterActionRequestBody {
 
     private val registrationEmail: Mapping[String] = text.verifying(Constraints.emailAddress, registrationEmailAddress)
 
-
     private val username: Mapping[String] = text.verifying(
       "error.username", name => name.matches("[A-z0-9]+") && name.length > 5 && name.length < 21
     )
@@ -93,7 +91,6 @@ object RegisterActionRequestBody {
     private val password: Mapping[String] = text.verifying(
       "error.password", name => name.length > 5 && name.length < 73
     )
-
 
     def registerFormMapping(refererHeader: Option[String]): Mapping[RegisterActionRequestBody] =
       mapping(
