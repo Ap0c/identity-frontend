@@ -8,6 +8,5 @@ import play.api.Play
 trait ExecutionContexts {
 
   implicit lazy val executionContext: ExecutionContext = play.api.libs.concurrent.Execution.Implicits.defaultContext
-  lazy val actorSystem: ActorSystem = PlayAkka.system(Play.current)
 
 }

@@ -27,10 +27,7 @@ object BlockedEmailDomainList extends ExecutionContexts with Logging {
 
 }
 
-class BlockedEmailDomainListJob(theActorSystem: ActorSystem, configuration: Configuration) extends ExecutionContexts with Logging  {
-
-  //Need to do this to avoid an "There is no started Application" error: We want the executionContext from the trait but not the actor syatem
-  override lazy val actorSystem = theActorSystem
+class BlockedEmailDomainListJob(actorSystem: ActorSystem, configuration: Configuration) extends ExecutionContexts with Logging  {
 
   def start = {
     logger.info("Starting job to update list of barred registration domains every half houe");
