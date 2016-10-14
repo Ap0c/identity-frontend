@@ -66,8 +66,6 @@ sudo nginx
     - `ls -la $nginxHome` should show the certificates correctly symlinked to the **full pathname** of the downloaded certificates
     - `ls -la $nginxHome/sites-enabled` should show `identity-frontend.conf`  correctly symlinked to the **full pathname** of `identity-frontend/nginx/identity-frontend.conf`
 
-You should now be able to start the application (`sbt run`), go to [https://profile-origin.thegulocal.com/management/healthcheck](https://profile-origin.thegulocal.com/management/healthcheck) and see a green padlock for your local SSL certificate as well as a 200 response.
-
 ## Configuration
 
 Install the local configuration file from s3:
@@ -78,6 +76,8 @@ aws s3 cp --profile identity s3://gu-identity-frontend-private/DEV/identity-fron
 ```
 
 **Note**: If you do not have Janus access to Identity, we can grant your team specific access, which means you would substitute `--profile identity` with e.g. `--profile membership`. Contact the Identity team if you require access to these files.
+
+You should now be able to start the application (`sbt run`), go to [https://profile-origin.thegulocal.com/management/healthcheck](https://profile-origin.thegulocal.com/management/healthcheck) and see a green padlock for your local SSL certificate as well as a 200 response.
 
 ## Running the application
 
